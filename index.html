@@ -64,6 +64,9 @@
         footer a:hover {
             color: #55e6b7;
         }
+        nav a.active {
+            background-color: #004d33;
+        }
     </style>
 </head>
 <body>
@@ -72,7 +75,7 @@
         <h1>Pure Mint Software</h1>
     </header>
     <nav>
-        <a href="reorder.html" target="content-frame" class="active">&#9664; Reorder YouTube Tags</a>
+        <a href="reorder.html" target="content-frame" class="active">Reorder YouTube Tags</a>
         <a href="convert.html" target="content-frame">Convert YouTube Tags</a>
         <!-- Add more links as needed -->
     </nav>
@@ -97,28 +100,26 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const links = document.querySelectorAll('nav a');
+            const arrow = '▶ '; // Right-facing triangle
+    
+            function updateActiveLink(clickedLink) {
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    link.textContent = link.textContent.replace(arrow, '');
+                });
+                clickedLink.classList.add('active');
+                clickedLink.textContent = arrow + clickedLink.textContent;
+            }
+    
             links.forEach(link => {
-                link.addEventListener('click', function() {
-                    links.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                    updateArrows();
+                link.addEventListener('click', function(e) {
+                    updateActiveLink(this);
                 });
             });
     
-            function updateArrows() {
-                links.forEach(link => {
-                    if (link.classList.contains('active')) {
-                        link.innerHTML = '&#9664; ' + link.innerHTML.replace('&#9664; ', '');
-                    } else {
-                        link.innerHTML = link.innerHTML.replace('&#9664; ', '');
-                    }
-                });
-            }
-    
             // Set the default active link
-            links[0].classList.add('active');
-            updateArrows();
+            updateActiveLink(links[0]);
         });
-    </script>
+    </script>    
 </body>
 </html>
