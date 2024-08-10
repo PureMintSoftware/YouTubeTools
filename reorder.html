@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reorder YouTube Tags</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 80%;
+            max-width: 1000px;
+            text-align: center;
+        }
+        header {
+            margin-bottom: 30px;
+        }
+        header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        header h1 {
+            font-size: 2.5em;
+            color: #66ffcc;
+            margin: 0;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            background-color: #003d29;
+            color: #66ffcc;
+            border: 1px solid #66ffcc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #tagList {
+            min-height: 50px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+            border: 2px dashed #66ffcc;
+            border-radius: 5px;
+            position: relative;
+        }
+        .tag {
+            background-color: #004d33;
+            border: 1px solid #66ffcc;
+            padding: 5px 10px;
+            margin: 2px;
+            cursor: move;
+            font-size: 0.9em;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+        }
+        .tag:hover {
+            background-color: #003d29;
+        }
+        .delete-btn {
+            margin-left: 5px;
+            color: red;
+            cursor: pointer;
+        }
+        button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            background-color: #66ffcc;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #55e6b7;
+        }
+        #placeholderMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #888;
+            font-size: 1em;
+            text-align: center;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="Pure Mint Transparent.png" alt="Pure Mint Software Logo">
+            <h1>Reorder YouTube Tags</h1>
+        </header>
+        <textarea id="tagInput" placeholder="Paste or type in your tags separated by commas."></textarea>
+        <div id="tagList">
+            <div id="placeholderMessage">Your tags will appear here. You can reorder them using drag and drop.</div>
+        </div>
+        <button onclick="generateOutput()">Process Tags and Copy to Clipboard</button>
+        <textarea id="outputArea" readonly placeholder="Your processed tags will appear here, and be automatically copied to your clipboard."></textarea>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script>
+        const tagInput = document.getElementById('tagInput');
+        const tagList = document.getElementById('tagList');
+        const outputArea = document.getElementById('outputArea');
+        const placeholderMessage = document.getElementById('placeholderMessage');
+
+        tagInput.addEventListener('input', processTags);
+
+        function processTags() {
+            const input = tagInput.value.trim();
+            let tags;
+            if (input.includes(',')) {
+                tags = input.split(',').map(tag => tag.trim().replace(/\s+/g, ''));
+            } else {
+                tags = input.split(/\s+/).map(tag => tag.startsWith('#') ? tag.slice(1) : tag);
+            }
+            createTags(tags);
+        }
+
+        function createTags(tags) {
+            tagList.innerHTML = '';
+            if (tags.length === 0) {
+                tagList.appendChild(placeholderMessage);
+            } else {
+                placeholderMessage.style.display = 'none';
+            }
+            tags.forEach(tag => {
+                if (tag) {
+                    const div = document.createElement('div');
+                    div.className = 'tag';
+                    div.textContent = tag;
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.className = 'delete-btn';
+                    deleteBtn.textContent = '×';
+                    deleteBtn.onclick = () => div.remove();
+                    div.appendChild(deleteBtn);
+                    tagList.appendChild(div);
+                }
+            });
+            initSortable();
+        }
+
+        function initSortable() {
+            new Sortable(tagList, {
+                animation: 150,
+                ghostClass: 'blue-background-class'
+            });
+        }
+
+        function generateOutput() {
+            const tags = Array.from(tagList.children).map(tag => tag.textContent.replace('×', '').trim());
+            const input = tagInput.value.trim();
+            let output;
+            if (input.includes(',')) {
+                output = tags.map(tag => `#${tag}`).join(' ');
+            } else {
+                output = tags.join(', ');
+            }
+            outputArea.value = output;
+            copyToClipboard(output);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        initSortable();
+    </script>
+</body>
+</html>
