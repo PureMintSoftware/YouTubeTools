@@ -21,6 +21,7 @@
             width: 80%;
             max-width: 1000px;
             text-align: center;
+            box-sizing: border-box;
         }
         header {
             margin-bottom: 30px;
@@ -38,16 +39,18 @@
         }
         textarea {
             width: 100%;
-            height: 100px;
+            height: 200px; /* Doubled from 100px */
             background-color: #003d29;
             color: #66ffcc;
             border: 1px solid #66ffcc;
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 10px;
+            box-sizing: border-box; /* Added to include padding in width calculation */
         }
         #tagList {
-            min-height: 50px;
+            width: 100%;
+            min-height: 200px;
             padding: 10px;
             display: flex;
             flex-wrap: wrap;
@@ -56,6 +59,7 @@
             border: 2px dashed #66ffcc;
             border-radius: 5px;
             position: relative;
+            box-sizing: border-box;
         }
         .tag {
             background-color: #004d33;
@@ -99,6 +103,7 @@
             font-size: 1em;
             text-align: center;
             pointer-events: none;
+            width: 90%;
         }
     </style>
 </head>
