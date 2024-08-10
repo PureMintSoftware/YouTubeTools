@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert YouTube Tags to #Hashtags</title>
+    <title>Reorder YouTube Tags</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -113,13 +113,12 @@
         <div id="tagList">
             <div id="placeholderMessage">Your tags will appear here. You can reorder them using drag and drop.</div>
         </div>
-        <button onclick="generateOutput()">Convert Tags and Copy to Clipboard</button>
-        <textarea id="outputArea" readonly placeholder="Your converted tags will appear here, and be automatically copied to your clipboard."></textarea>
+        <button onclick="generateOutput()">Process Tags and Copy to Clipboard</button>
+        <textarea id="outputArea" readonly placeholder="Your reordered tags will appear here, and be automatically copied to your clipboard."></textarea>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script>
-        // The JavaScript remains unchanged
         const tagInput = document.getElementById('tagInput');
         const tagList = document.getElementById('tagList');
         const outputArea = document.getElementById('outputArea');
@@ -132,10 +131,10 @@
             let tags;
             if (input.includes(',')) {
                 // Input is comma-separated
-                tags = input.split(',').map(tag => tag.trim().replace(/\s+/g, ''));
+                tags = input.split(',').map(tag => tag.trim());
             } else {
-                // Input is space-separated (possibly with # prefixes)
-                tags = input.split(/\s+/).map(tag => tag.startsWith('#') ? tag.slice(1) : tag);
+                // Input is space-separated
+                tags = input.split(/\s+/);
             }
             createTags(tags);
         }
@@ -175,11 +174,11 @@
             let output;
             
             if (tagInput.value.includes(',')) {
-                // Input was comma-separated, so output hashtags
-                output = tags.map(tag => `#${tag}`).join(' ');
-            } else {
-                // Input was space-separated (possibly with # prefixes), so output comma-separated
+                // Input was comma-separated, so output comma-separated
                 output = tags.join(', ');
+            } else {
+                // Input was space-separated, so output space-separated
+                output = tags.join(' ');
             }
             
             outputArea.value = output;
