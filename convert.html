@@ -3,70 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert YouTube Tags to Hashtags</title>
+    <title>Convert YouTube Tags to #Hashtags</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #000;
             color: #fff;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #001f14;
-            border-radius: 10px;
+            width: 80%;
+            max-width: 1000px;
+            text-align: center;
         }
-        #tagInput, #outputArea {
+        header {
+            margin-bottom: 30px;
+        }
+        header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        header h1 {
+            font-size: 2.5em;
+            color: #66ffcc;
+            margin: 0;
+        }
+        textarea {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
+            height: 100px;
             background-color: #003d29;
             color: #66ffcc;
-            box-sizing: border-box;
+            border: 1px solid #66ffcc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
         }
         #tagList {
             min-height: 50px;
             padding: 10px;
-            margin: 10px 0;
-            background-color: #002620;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+            border: 2px dashed #66ffcc;
             border-radius: 5px;
+            position: relative;
         }
         .tag {
-            display: inline-block;
             background-color: #004d33;
-            color: #66ffcc;
+            border: 1px solid #66ffcc;
             padding: 5px 10px;
-            margin: 5px;
-            border-radius: 5px;
+            margin: 2px;
             cursor: move;
+            font-size: 0.9em;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+        }
+        .tag:hover {
+            background-color: #003d29;
         }
         .delete-btn {
-            margin-left: 10px;
-            color: #ff4d4d;
+            margin-left: 5px;
+            color: red;
             cursor: pointer;
         }
         button {
+            margin-right: 10px;
+            margin-bottom: 10px;
             padding: 10px 20px;
-            background-color: #004d33;
-            color: #66ffcc;
+            background-color: #66ffcc;
+            color: #000;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #66ffcc;
-            color: #004d33;
+            background-color: #55e6b7;
+        }
+        #placeholderMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #888;
+            font-size: 1em;
+            text-align: center;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <header>
+            <img src="Pure Mint Transparent.png" alt="Pure Mint Software Logo">
+            <h1>Convert YouTube Tags to #Hashtags</h1>
+        </header>
         <textarea id="tagInput" placeholder="Paste or type in your tags separated by commas."></textarea>
         <div id="tagList">
             <div id="placeholderMessage">Your tags will appear here. You can reorder them using drag and drop.</div>
@@ -120,4 +161,26 @@
 
         function initSortable() {
             new Sortable(tagList, {
-                animation:
+                animation: 150,
+                ghostClass: 'blue-background-class'
+            });
+        }
+
+        function generateOutput() {
+            const tags = Array.from(tagList.children).map(tag => tag.textContent.replace('×', '').trim());
+            const output = tags.map(tag => `#${tag}`).join(' ');
+            outputArea.value = output;
+            copyToClipboard(output);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        initSortable();
+    </script>
+</body>
+</html>
