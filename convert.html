@@ -125,8 +125,10 @@
             const input = tagInput.value.trim();
             let tags;
             if (input.includes(',')) {
+                // Input is comma-separated
                 tags = input.split(',').map(tag => tag.trim().replace(/\s+/g, ''));
             } else {
+                // Input is space-separated (possibly with # prefixes)
                 tags = input.split(/\s+/).map(tag => tag.startsWith('#') ? tag.slice(1) : tag);
             }
             createTags(tags);
@@ -164,7 +166,16 @@
 
         function generateOutput() {
             const tags = Array.from(tagList.children).map(tag => tag.textContent.replace('×', '').trim());
-            const output = tags.map(tag => `#${tag}`).join(' ');
+            let output;
+            
+            if (tagInput.value.includes(',')) {
+                // Input was comma-separated, so output hashtags
+                output = tags.map(tag => `#${tag}`).join(' ');
+            } else {
+                // Input was space-separated (possibly with # prefixes), so output comma-separated
+                output = tags.join(', ');
+            }
+            
             outputArea.value = output;
             copyToClipboard(output);
         }
